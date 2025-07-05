@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELO 2025 - Bots Building Bots Workshop</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            min-height: 100vh;
+            color: #d4af37;
+            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(139, 0, 0, 0.1) 0%, rgba(139, 69, 19, 0.1) 50%, rgba(255, 140, 0, 0.05) 100%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            color: #d4af37;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(139, 0, 0, 0.5);
+            color: #d4af37;
+        }
+
+        .header .subtitle {
+            font-size: 1.3rem;
+            font-weight: 400;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .header .creator {
+            font-size: 1.1rem;
+            font-weight: 400;
+            margin: 1rem 0;
+        }
+
+        .header .creator a {
+            color: #ff8c42;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .header .creator a:hover {
+            border-bottom-color: #ff8c42;
+        }
+
+        .header .conference {
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-top: 1rem;
+            opacity: 0.8;
+        }
+
+        .header .conference a {
+            color: #d4af37;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .header .conference a:hover {
+            border-bottom-color: #d4af37;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: rgba(0, 0, 0, 0.85);
+            border: 2px solid #8b4513;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 0 30px rgba(139, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 40px rgba(255, 140, 0, 0.4);
+        }
+
+        .card h2 {
+            color: #d4af37;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #8b4513;
+            padding-bottom: 0.5rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .card h3 {
+            color: #ff8c42;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 1.5rem 0 0.5rem 0;
+        }
+
+        .link-list {
+            list-style: none;
+        }
+
+        .link-list li {
+            margin: 0.75rem 0;
+        }
+
+        .link-list a {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: rgba(139, 69, 19, 0.2);
+            border-radius: 8px;
+            text-decoration: none;
+            color: #d4af37;
+            transition: all 0.3s ease;
+            border-left: 4px solid #ff8c42;
+            border: 1px solid #8b4513;
+        }
+
+        .link-list a:hover {
+            background: rgba(139, 69, 19, 0.4);
+            transform: translateX(5px);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+        }
+
+        .link-list .icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 0.75rem;
+            opacity: 0.7;
+        }
+
+        .demo-link {
+            background: linear-gradient(135deg, #8b0000, #ff6b35) !important;
+            color: #f5f5dc !important;
+            border-left: 4px solid #ff5252 !important;
+            border: 2px solid #8b4513 !important;
+        }
+
+        .demo-link:hover {
+            background: linear-gradient(135deg, #ff6b35, #daa520) !important;
+            transform: translateX(5px) translateY(-2px) !important;
+        }
+
+        .tools-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .tool-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(139, 69, 19, 0.2);
+            border-radius: 8px;
+            border: 2px solid #8b4513;
+            transition: all 0.3s ease;
+        }
+
+        .tool-item:hover {
+            border-color: #ff8c42;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+        }
+
+        .tool-item .tool-name {
+            font-weight: 600;
+            color: #d4af37;
+            margin-top: 0.5rem;
+        }
+
+        .description {
+            color: #c9b037;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        .footer {
+            text-align: center;
+            color: #d4af37;
+            opacity: 0.8;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(139, 69, 19, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .header .subtitle {
+                font-size: 1.3rem;
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tools-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Bots Building Bots</h1>
+            <div class="subtitle">To the Funhouse and Beyond: Probing Generative AI for Playful Text Generation</div>
+            <div class="creator"><a href="https://bsky.app/profile/anasalter.bsky.social" target="_blank">Anastasia Salter</a></div>
+            <div class="conference"><a href="https://elo25.org/" target="_blank">ELO 2025 Conference</a></div>
+        </header>
+
+        <div class="content-grid">
+            <div class="card">
+                <h2>🎭 Demo</h2>
+                <p class="description">
+                    A simple demo of output from a GPT2 trained on Dante's <i>Inferno.</i>
+                </p>
+                <ul class="link-list">
+                    <li>
+                        <a href="dante.html" class="demo-link">
+                            <span class="icon">🔥</span>
+                            <span>Modified GPT2 Demo Output</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>🔬 Process</h2>
+                <p class="description">
+                    Python code generated using Claude Sonnet 4.
+                </p>
+                <ul class="link-list">
+                    <li>
+                        <a href="https://colab.research.google.com/drive/1cmsALgpYRbqZuoJWAbeWZ1Cytq3dbpDs?usp=sharing" target="_blank">
+                            <span class="icon">📓</span>
+                            <span>The Notebook (Google Colab)</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://huggingface.co/anasalter/dante-inferno-gpt2" target="_blank">
+                            <span class="icon">🤗</span>
+                            <span>The Trained Bot (Hugging Face)</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>🛠️ Toolkit</h2>
+                <p class="description">
+                    Google Colab is not required, but is helpful for pedagogy and working with LLMs without installing Python locally.
+                </p>
+                <div class="tools-list">
+                    <div class="tool-item">
+                        <div style="font-size: 2rem;">🤖</div>
+                        <div class="tool-name">Claude Sonnet 4</div>
+                    </div>
+                    <div class="tool-item">
+                        <div style="font-size: 2rem;">🔬</div>
+                        <div class="tool-name">Google Colab</div>
+                    </div>
+                    <div class="tool-item">
+                        <div style="font-size: 2rem;">🤗</div>
+                        <div class="tool-name">Hugging Face</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p><a href="https://elo25.org/" target="_blank" style="color: #d4af37; text-decoration: none;">ELO 2025 Conference</a> • Bots Building Bots</p>
+      
+        </footer>
+    </div>
+</body>
+</html>
